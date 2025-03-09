@@ -15,7 +15,7 @@ app.use(helmet());
 app.use(morgan('dev'));
 dbConnect();
 
-app.get('api/v1/', (req, res) => {
+app.get('/api/v1/', (req, res) => {
     res.send("Hello world! Welcome to Quiz Application");
 });
 
