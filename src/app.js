@@ -19,9 +19,9 @@ app.get('/v1/', (req, res) => {
     res.send("Hello world");
 });
 
-app.use('/v1/auth', authRoutes);
-app.use('/v1/admin', authenticateUser, authorizeRoles('admin'), adminQuiz);
-app.use('/v1/competition', authenticateUser, authorizeRoles('student'), competitionRoutesManager);
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/admin', authenticateUser, authorizeRoles('admin'), adminQuiz);
+app.use('/api/v1/competition', authenticateUser, authorizeRoles('student'), competitionRoutesManager);
 
 
 export default app;
