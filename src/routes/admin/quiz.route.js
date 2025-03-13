@@ -1,5 +1,5 @@
 import express from 'express';
-import { addQuestion, createQuiz, deleteQuestion, getAllQuestions, getAllQuiz, updateQuestion } from '../../controllers/admin/quiz.controller.js';
+import { addQuestion, createQuiz, deleteQuestion, getAllQuestions, getAllQuiz, updateQuestion, updateQuiz, deleteQuiz } from '../../controllers/admin/quiz.controller.js';
 import { getAllUser } from '../../controllers/admin/users.controller.js';
 import { errorResponse } from '../../utils/responseHandler.js';
 
@@ -10,10 +10,22 @@ adminQuiz.get('/all-users', getAllUser);
 
 
 // **************************Quiz&Question Routes*************************************
+// Create Quiz
 adminQuiz.post('/create-quiz', createQuiz);
+// Get all Quizzes
 adminQuiz.get('/all-quizzes', getAllQuiz);
+// Update Quiz
+adminQuiz.post('/update-quiz', (req, res) => {
+    return errorResponse(res, 400, "Bad Request, ID parameter is required.", "ID parameter is required.");
+});
+adminQuiz.post('/update-quiz/:id', updateQuiz);
+// Delete Quiz
+adminQuiz.post('/delete-quiz', (req, res) => {
+    return errorResponse(res, 400, "Bad Request, ID parameter is required.", "ID parameter is required.");
+});
+adminQuiz.post('/delete-quiz/:id', deleteQuiz);
 
-
+// Add New Question
 adminQuiz.post('/add-question', (req, res) => {
     return errorResponse(res, 400, "Bad Request", "ID parameter is required");
 });

@@ -54,7 +54,6 @@ export const getQuestions = asyncHandler(async (req, res) => {
 
 export const submitQuestionOnSaveNext = asyncHandler(async (req, res) => {
     try {
-
         const requiredFields = ["user_id", "quiz_id", "question_id", "selected_option", "answer_status"];
         const errorMessage = validateFields(requiredFields, req.body);
         if (errorMessage) {
@@ -78,20 +77,28 @@ export const submitQuestionOnSaveNext = asyncHandler(async (req, res) => {
 
 export const submitQuiz = asyncHandler(async (req, res) => {
     try {
-        const requiredFields = ["user_id", "quiz_id"];
+        const requiredFields = ["user_id", "quiz_id", "question_id", "selected_option", "answer_status"];
         const errorMessage = validateFields(requiredFields, req.body);
         if (errorMessage) {
             return errorResponse(res, 400, errorMessage);
         }
 
-        const { user_id, quiz_id } = req.body;
+        const { user_id, quiz_id, question_id, selected_option, answer_status } = req.body;
 
         const quiz = await Quiz.findById({ _id: quiz_id });
         if (!quiz) {
             return errorResponse(res, 400, "Quiz Not Found");
         }
+
         const negative_marks = quiz.negative_marks;
         const per_question_marks = quiz.per_question_marks;
+
+
+        await StudentAttempt.findOneAndUpdate(
+            { student_id: user_id, quiz_id, question_id },
+            { selected_option, answer_status },
+            { upsert: true, new: true }
+        );
 
         const attempts = await StudentAttempt.find({ student_id: user_id, quiz_id });
 
@@ -104,11 +111,6 @@ export const submitQuiz = asyncHandler(async (req, res) => {
             },
             { correctCount: 0, incorrectCount: 0 }
         );
-
-        console.log(`per_question_marks: ${per_question_marks}`);
-        console.log(`negative_marks: ${negative_marks}`);
-        console.log(`correctCount: ${correctCount}`);
-        console.log(`incorrectCount: ${incorrectCount}`);
 
         let total_score = (parseInt(correctCount) * parseInt(per_question_marks)) - (parseInt(incorrectCount) * parseInt(negative_marks))
         let total_attempt = parseInt(correctCount) + parseInt(incorrectCount);

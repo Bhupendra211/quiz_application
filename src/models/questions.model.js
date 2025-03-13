@@ -8,6 +8,12 @@ const questionSchema = new Schema({
         required: true,
     },
 
+    category: {
+        type: String,
+        required: true,
+        trim: true
+    },
+
     question: {
         type: String,
         required: true,

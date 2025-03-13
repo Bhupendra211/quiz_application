@@ -8,13 +8,13 @@ import { validateFields } from "../utils/validateFields.js";
 export const registerManager = asyncHandler(async (req, res) => {
 
     try {
-        const requiredFields = ["name", "username", "password"];
+        const requiredFields = ["name", "username", "dob", "password"];
         const errorMessage = validateFields(requiredFields, req.body);
         if (errorMessage) {
             return errorResponse(res, 400, errorMessage);
         }
 
-        const { name, username, password } = req.body;
+        const { name, username, dob, password } = req.body;
 
         const checkUsername = await User.findOne({ username: username });
         console.log(checkUsername);
@@ -23,7 +23,7 @@ export const registerManager = asyncHandler(async (req, res) => {
             return errorResponse(res, 400, 'Username Already Exists!');
         }
 
-        const manager = new User({ name, username, password });
+        const manager = new User({ name, username, dob, password });
         await manager.save();
 
         return successResponse(res, 201, "You are register successfully");
@@ -34,30 +34,7 @@ export const registerManager = asyncHandler(async (req, res) => {
 });
 
 
-const sendTokenResponse = (user, res) => {
-    const token = jwt.sign(
-        { id: user._id, username: user.username, role: user.role },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN }
-    );
 
-    // Secure Cookie Options
-    const options = {
-        httpOnly: true, // Prevents XSS attacks
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "Strict", // Prevents CSRF attacks
-        maxAge: process.env.JWT_EXPIRES_IN * 1000, // JWT expiration time
-    };
-
-    // Send token as HTTP-only cookie
-    res.cookie("token", token, options);
-
-    return res.status(200).json({
-        success: true,
-        message: "User Logged In Successfully",
-        user: { id: user._id, username: user.username, role: user.role },
-    });
-};
 
 export const loginManager = asyncHandler(async (req, res) => {
     try {
@@ -80,7 +57,7 @@ export const loginManager = asyncHandler(async (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: user._id, username: user.username, role: user.role },
+            { id: user._id, username: user.username, dob: user.dob, role: user.role },
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES_IN }
         );
@@ -90,6 +67,7 @@ export const loginManager = asyncHandler(async (req, res) => {
             "status": "success",
             "id": user._id,
             "username": user.username,
+            "dob": user.dob,
             "role": user.role,
             "token": token
         }

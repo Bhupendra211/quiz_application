@@ -9,15 +9,16 @@ import { validateFields } from "../../utils/validateFields.js";
 export const createQuiz = asyncHandler(async (req, res) => {
     try {
 
-        const requiredFields = ["quiz_name", "description", "total_marks", "per_question_marks", "negative_marks", "total_question", "duration"];
+        const requiredFields = [
+            "quiz_name", "total_marks", "per_question_marks", "negative_marks", "total_question", "duration", "quiz_date", "quiz_time"];
         const errorMessage = validateFields(requiredFields, req.body);
         if (errorMessage) {
             return errorResponse(res, 400, errorMessage);
         }
 
-        const { quiz_name, description, total_marks, per_question_marks, negative_marks, total_question, duration } = req.body;
+        const { quiz_name, description, total_marks, per_question_marks, negative_marks, total_question, duration, quiz_date, quiz_time } = req.body;
 
-        const manager = new Quiz({ quiz_name, description, total_marks, per_question_marks, negative_marks, total_question, duration });
+        const manager = new Quiz({ quiz_name, description, total_marks, per_question_marks, negative_marks, total_question, duration, quiz_date, quiz_time });
         await manager.save();
 
         return successResponse(res, 201, "Quiz Created Successfully.", Quiz);
@@ -45,18 +46,68 @@ export const getAllQuiz = asyncHandler(async (req, res) => {
     }
 });
 
+// Update Quiz
+export const updateQuiz = asyncHandler(async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { quiz_name, description, total_marks, per_question_marks, negative_marks, total_question, duration, quiz_date, quiz_time } = req.body;
+
+        const quizExist = await Quiz.findById(id);
+        if (!quizExist) {
+            return errorResponse(res, 404, "Quiz Not Found");
+        }
+
+        quizExist.quiz_name = quiz_name ?? quizExist.quiz_name;
+        quizExist.description = description ?? quizExist.description;
+        quizExist.total_marks = total_marks ?? quizExist.total_marks;
+        quizExist.per_question_marks = per_question_marks ?? quizExist.per_question_marks;
+        quizExist.negative_marks = negative_marks ?? quizExist.negative_marks;
+        quizExist.total_question = total_question ?? quizExist.total_question;
+        quizExist.duration = duration ?? quizExist.duration;
+        quizExist.quiz_date = quiz_date ?? quizExist.quiz_date;
+        quizExist.quiz_time = quiz_time ?? quizExist.quiz_time;
+
+        await quizExist.save();
+
+        return successResponse(res, 200, "Quiz Updated Successfully");
+    } catch (error) {
+        console.log(error.message);
+        return errorResponse(res, 500, "Internal Server Error", error.message);
+
+    }
+});
+
+// Delete Quiz
+export const deleteQuiz = asyncHandler(async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const quizExist = await Quiz.findByIdAndDelete(id);
+        if (!quizExist) {
+            return errorResponse(res, 404, "Quiz Not Found");
+        }
+
+        return successResponse(res, 200, "Quiz Deleted Successfully");
+    } catch (error) {
+        console.log(error.message);
+        return errorResponse(res, 500, "Internal Server Error", error.message);
+
+    }
+});
+
+
 // Add Questions in a quiz
 export const addQuestion = asyncHandler(async (req, res) => {
     try {
-        const requiredFields = ["question", "option1", "option2", "answer", "number"];
+        const requiredFields = ["category", "question", "option1", "option2", "answer", "number"];
         const errorMessage = validateFields(requiredFields, req.body);
         if (errorMessage) {
             return errorResponse(res, 400, errorMessage);
         }
         const { id } = req.params;
-        const { question, option1, option2, option3, option4, answer, number } = req.body;
+        const { category, question, option1, option2, option3, option4, answer, number } = req.body;
 
-        const questionManager = new Question({ quiz_id: id, question, option1, option2, option3, option4, answer, number });
+        const questionManager = new Question({ quiz_id: id, category, question, option1, option2, option3, option4, answer, number });
         await questionManager.save();
 
         return successResponse(res, 201, "Question Added Successfully");

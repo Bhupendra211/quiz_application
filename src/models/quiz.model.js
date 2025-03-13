@@ -12,6 +12,7 @@ const quizSchema = new Schema({
     description: {
         type: String,
         trim: true,
+        required: false,
     },
 
     total_marks: {
@@ -39,9 +40,27 @@ const quizSchema = new Schema({
     },
 
     duration: {
-        type: Number,
+        type: Date,
         required: true,
         trim: true,
+    },
+
+    quiz_date: {
+        type: Date,
+        require: true,
+        trim: true,
+    },
+
+    quiz_time: {
+        type: String,
+        required: true,
+        trim: true,
+        validate: {
+            validator: function (value) {
+                return /^([0-1]\d|2[0-3]):([0-5]\d)$/.test(value); // Validates HH:MM format
+            },
+            message: "Invalid time format! Use HH:MM (24-hour format).",
+        },
     },
 }, {
     timestamps: true

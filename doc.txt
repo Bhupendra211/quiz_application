@@ -1,0 +1,34 @@
+Create New Quiz: These Fields are required for this.
+{
+    "quiz_name": "JavaScript Basics",
+    "description": "A quiz on JS fundamentals",
+    "total_marks": 50,
+    "per_question_marks":5,
+    "negative_marks":1,
+    "total_question": 10,
+    "duration": 30,
+    "quiz_date":"11-04-2025",
+    "quiz_time":"10:00"
+}
+
+Note: description is optional, and quiz_time required in 24 hour formate and don't need to AM or PM with time. Time is required in String formate. And Date need in Date formate.
+
+
+
+Add Question on a quiz: These Fields are required.
+
+{
+    "category":"Computer Fundamental",
+    "question":"Testing question10",
+    "option1":"option1",
+    "option2":"option2",
+    "option3":"option3",
+    "option4":"option4",
+    "answer":"option1",
+    "number":4
+}
+
+Note: 
+1- The "number" is per question mark. 
+2- This we can calculate automatically when our admin is put the total mark on the create quiz section. 
+3- We need quiz id to add new question like: http:url.com/add-question/67cd4a6ec579843ef21645d9
