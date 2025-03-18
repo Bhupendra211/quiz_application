@@ -66,6 +66,8 @@ export const loginManager = asyncHandler(async (req, res) => {
             "statusResponse": "200",
             "status": "success",
             "id": user._id,
+            "name": user.name,
+            "email": user.email,
             "username": user.username,
             "dob": user.dob,
             "role": user.role,
