@@ -54,10 +54,8 @@ export const getQuestions = asyncHandler(async (req, res) => {
 
 // Get all quizzes
 export const getAllQuiz = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
-
     try {
-        const quizzes = await paginate(Quiz, {}, parseInt(page), parseInt(limit));
+        const quizzes = await Quiz.find();
 
         if (!quizzes.data.length) {
             return errorResponse(res, 404, "No quizzes found", null);
