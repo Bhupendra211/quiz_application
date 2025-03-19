@@ -63,7 +63,7 @@ export const getAllQuiz = asyncHandler(async (req, res) => {
 
         return successResponse(res, 200, "Quizzes fetched successfully", quizzes);
     } catch (error) {
-        return errorResponse(res, 500, "Internal Server Error", error.message);
+        return errorResponse(res, 500, `Internal Server Error ${error}`, error.message);
     }
 });
 
