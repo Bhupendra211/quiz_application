@@ -52,6 +52,25 @@ export const getQuestions = asyncHandler(async (req, res) => {
 });
 
 
+// Get all quizzes
+export const getAllQuiz = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+
+    try {
+        const quizzes = await paginate(Quiz, {}, parseInt(page), parseInt(limit));
+
+        if (!quizzes.data.length) {
+            return errorResponse(res, 404, "No quizzes found", null);
+        }
+
+        return successResponse(res, 200, "Quizzes fetched successfully", quizzes);
+    } catch (error) {
+        return errorResponse(res, 500, "Internal Server Error", error.message);
+    }
+});
+
+
+
 export const submitQuestionOnSaveNext = asyncHandler(async (req, res) => {
     try {
         const requiredFields = ["user_id", "quiz_id", "question_id", "selected_option", "answer_status"];
