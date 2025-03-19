@@ -57,9 +57,9 @@ export const getAllQuiz = asyncHandler(async (req, res) => {
     try {
         const quizzes = await Quiz.find();
 
-        if (!quizzes.data.length) {
-            return errorResponse(res, 404, "No quizzes found", null);
-        }
+        // if (!quizzes.data.length) {
+        //     return errorResponse(res, 404, "No quizzes found", null);
+        // }
 
         return successResponse(res, 200, "Quizzes fetched successfully", quizzes);
     } catch (error) {
