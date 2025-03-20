@@ -24,7 +24,7 @@ export const getQuestions = asyncHandler(async (req, res) => {
         let questions = await redis.get(questionsCacheKey);
 
         if (!questions) {
-            questions = await Question.find({ quiz_id: id }).limit(totalQuestions).lean();
+            questions = await Question.find({ quiz_id: id }).lean();
 
             if (questions.length === 0) {
                 return errorResponse(res, 404, "No Questions Found", null);
